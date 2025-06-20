@@ -39,14 +39,15 @@ export default function FormLogin(props: FormLoginProps) {
   }
 
   const { onSubmit, loading } = useAuthSubmit(
-    () =>
-      UserApi.formLogin({
+    () => {
+      return UserApi.formLogin({
         register: false,
         loginId: account,
         password: password,
         source: UserConnectionSource.email,
         orgId: props.organizationId,
-      }),
+      });
+    },
     false,
     null,
     afterLoginSuccess,

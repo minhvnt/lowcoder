@@ -162,7 +162,9 @@ export const fetchJsDSPaginationByApp = async (request: fetchDataSourcePaginatio
 
 export const fetchOrgPaginationByEmail = async (request: fetchOrgsByEmailRequestType)=> {
     try {
+        console.log('fetchOrgPaginationByEmail:', request);
         const response = await OrgApi.fetchOrgsPaginationByEmail(request);
+        console.log('fetchOrgPaginationByEmail response:', response);
         return {
             success: true,
             data: response.data.data,

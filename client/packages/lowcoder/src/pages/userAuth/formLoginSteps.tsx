@@ -124,10 +124,12 @@ export default function FormLoginSteps(props: FormLoginProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
-  const isEmailLoginEnabled = useMemo(() => {
-    return isFormLoginEnabled && signinEnabled;
-  }, [isFormLoginEnabled, signinEnabled]);
+  // const isEmailLoginEnabled = useMemo(() => {
+  //   return isFormLoginEnabled && signinEnabled;
+  // }, [isFormLoginEnabled, signinEnabled]);
   
+  const isEmailLoginEnabled = true;
+
   const isEnterpriseMode = useMemo(() => {
     return serverSettings?.LOWCODER_WORKSPACE_MODE === "ENTERPRISE" || serverSettings?.LOWCODER_WORKSPACE_MODE === "SINGLEWORKSPACE";
   }, [serverSettings]);
@@ -164,8 +166,8 @@ export default function FormLoginSteps(props: FormLoginProps) {
   }
 
   const { onSubmit, loading } = useAuthSubmit(
-    () =>
-      UserApi.formLogin({
+    () => {
+      return UserApi.formLogin({
         register: false,
         loginId: account,
         password: password,
@@ -173,7 +175,8 @@ export default function FormLoginSteps(props: FormLoginProps) {
         source: UserConnectionSource.email,
         orgId: organizationId,
         authId,
-      }),
+      });
+    },
     false,
     redirectUrl,
     afterLoginSuccess,
@@ -260,7 +263,6 @@ export default function FormLoginSteps(props: FormLoginProps) {
       </Spin>
     );
   }
-
   if(currentStep === CurrentStepEnum.EMAIL) {
     return (
       <>

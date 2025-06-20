@@ -14,7 +14,8 @@ buildVars.forEach(({ name, defaultValue }) => {
   define[name] = JSON.stringify(process.env[name] || defaultValue);
 });
 
-const apiBaseUrl = "http://localhost:8000";
+//const apiBaseUrl = "http://localhost:8000";
+const apiBaseUrl = "http://localhost:8080";
 
 module.exports = {
   mode: 'production',

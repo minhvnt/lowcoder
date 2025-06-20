@@ -61,7 +61,7 @@ const ThirdAuthWrapper = styled.div`
   }
 `;
 
-// this is used to bind multiple third party logins to an sngle account
+// this is used to bind multiple third party logins to an single account
 const thirdPartyLoginLabel = (name: string) => trans("userAuth.signInLabel", { name: name });
 
 export const ThirdPartyBindCard = () => {
@@ -92,9 +92,13 @@ function Login() {
   const queryParams = new URLSearchParams(location.search);
   const { orgId } = useParams<{orgId?: string}>();
 
+  const tmp1 = useContext(AuthContext);
+  console.log('AuthContext after login:', tmp1);
+  
   const loginType = systemConfig?.authConfigs.find(
     (config) => config.sourceType === queryParams.get(AuthSearchParams.loginType)
   )?.sourceType;
+  
   let autoJumpSource: string | undefined;
   if (loginType) {
     autoJumpSource = loginType;

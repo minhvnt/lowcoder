@@ -15,6 +15,7 @@ class ConfigApi extends Api {
     if(orgId?.length) {
       authConfigURL += `?orgId=${orgId}`;
     }
+    console.log('authConfigURL:', authConfigURL);
     return Api.get(authConfigURL);
   }
 

@@ -71,6 +71,7 @@ export type SystemConfig = {
   authConfigs: ThirdPartyConfigType[];
 } & ConfigBaseInfo;
 
+// xu ly du lieu cau hinh tra ve tu server
 export const transToSystemConfig = (responseData: ConfigResponseData): SystemConfig => {
   const thirdPartyAuthConfigs: ThirdPartyConfigType[] = [];
   responseData.authConfigs?.forEach((authConfig) => {
@@ -105,6 +106,18 @@ export const transToSystemConfig = (responseData: ConfigResponseData): SystemCon
   const emailConfig = responseData.authConfigs?.find(
     (c) => c.source === UserConnectionSource.email
   ) as FormConfig | undefined;
+
+  const tmp = {
+    ...responseData,
+    form: {
+      enableRegister: !!emailConfig?.enableRegister,
+      enableLogin: !!emailConfig?.enable,
+      id: emailConfig?.id,
+      type: "EMAIL",
+    },
+    authConfigs: thirdPartyAuthConfigs,
+  };
+  console.log('AuthContext login:', tmp);
 
   return {
     ...responseData,

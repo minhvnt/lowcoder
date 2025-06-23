@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  lowcoder:
+    image: lowcoderorg/lowcoder-ce:latest
+    container_name: lowcoder
+    env_file:
+      - path: ./default.env
+        required: true
+      - path: ./override.env
+        required: false
+    ports:
+      - "3000:3000"
+      - "3443:3443"
+      - "27017:27017"
+    volumes:
+      - ./lowcoder-stacks:/lowcoder-stacks
+      - ./lowcoder-stacks/assets:/lowcoder/assets
+    depends_on:
+      - postgres
+    networks:
+      - lowcoder-network
+    restart: always
+    
+  postgres:
+    image: postgres:16
+    container_name: postgres
+    environment:
+      - POSTGRES_DB=lowcoder
+      - POSTGRES_USER=lowcoder_user
+      - POSTGRES_PASSWORD=580784d01662f1f7e84d8c0208a5cf29996ef1ab667c775d6c7877657bb5f28f
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - lowcoder-network
+    restart: always
+    
+volumes:
+  lowcoder-stacks:
+  postgres-data:
+
+networks:
+  lowcoder-network:
+    driver: bridge

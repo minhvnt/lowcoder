@@ -70,34 +70,9 @@ public class ServerSettingServiceImpl implements ServerSettingService {
                             .value(value)
                             .build();
                 })
-                .flatMap(setting ->
-                        repository.findById(setting.getKey())
-                                .flatMap(existing -> {
-                                    if (!Objects.equals(existing.getValue(), setting.getValue())) {
-                                        return repository.save(setting); // giá trị khác → cập nhật
-                                    } else {
-                                        return Mono.empty(); // giống nhau → bỏ qua
-                                    }
-                                })
-                                .switchIfEmpty(repository.save(setting)) // chưa có → thêm mới
-                )
+                .flatMap(repository::save)
                 .subscribe();
-        // tạm che đoạn code không kiểm tra trùng key
-//        Flux.fromIterable(merged.keySet())
-//                .map(key -> {
-//                    String value = envVariables.getOrDefault(key, "");
-//                    if(EXCLUDED_KEYS.contains(key)) {
-//                        value = "stored on the server";
-//                    }
-//                    return ServerSetting.builder()
-//                            .key(key)
-//                            .value(value)
-//                            .build();
-//                })
-//                .flatMap(repository::save)
-//                .subscribe();
     }
-
 
     private Map<String, String> getEnvironmentVariablesDefaults() {
         Map<String, String> defaults = new HashMap<>();

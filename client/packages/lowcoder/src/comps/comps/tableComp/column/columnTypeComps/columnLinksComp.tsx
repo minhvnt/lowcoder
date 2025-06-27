@@ -13,6 +13,7 @@ import { clickEvent, eventHandlerControl, doubleClickEvent } from "comps/control
 import { useCompClickEventHandler } from "@lowcoder-ee/comps/utils/useCompClickEventHandler";
 import { migrateOldData } from "@lowcoder-ee/comps/generators/simpleGenerators";
 import { fixOldActionData } from "comps/comps/tableComp/column/simpleColumnTypeComps";
+import { IconControl } from "comps/controls/iconControl"; // thêm thư viện icon
 
 const MenuLinkWrapper = styled.div`
   > a {
@@ -48,7 +49,8 @@ const MenuItem = React.memo(({ option, index }: { option: any; index: number }) 
     <MenuLinkWrapper>
       <ColumnLink
         disabled={option.disabled}
-        label={option.label}
+        // label={option.label}
+        label={<><span style={{marginRight: option.prefixIcon ? 4 : 0}}>{option.prefixIcon}</span>{option.label}</>} // bổ sung điều chỉnh prefix icon cho links
         onClick={option.onClick}
       />
     </MenuLinkWrapper>
@@ -60,6 +62,7 @@ MenuItem.displayName = 'MenuItem';
 const OptionItemTmp = new MultiCompBuilder(
   {
     label: StringControl,
+    prefixIcon: IconControl, // thêm prefix icon
     onClick: eventHandlerControl(LinkEventOptions),
     hidden: BoolCodeControl,
     disabled: BoolCodeControl,
@@ -72,6 +75,7 @@ const OptionItemTmp = new MultiCompBuilder(
     return (
       <>
         {children.label.propertyView({ label: trans("label") })}
+        {children.prefixIcon.propertyView({ label: trans("button.prefixIcon") })} 
         {hiddenPropertyView(children)}
         {disabledPropertyView(children)}
         {children.onClick.propertyView()}

@@ -124,11 +124,12 @@ export default function FormLoginSteps(props: FormLoginProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
-  const isEmailLoginEnabled = useMemo(() => {
-    return isFormLoginEnabled && signinEnabled;
-  }, [isFormLoginEnabled, signinEnabled]);
+  // Tạm che để cho phép đăng nhập với email
+  // const isEmailLoginEnabled = useMemo(() => {
+  //   return isFormLoginEnabled && signinEnabled;
+  // }, [isFormLoginEnabled, signinEnabled]);
   
-  //const isEmailLoginEnabled = true;
+  const isEmailLoginEnabled = true;
 
   const isEnterpriseMode = useMemo(() => {
     return serverSettings?.LOWCODER_WORKSPACE_MODE === "ENTERPRISE" || serverSettings?.LOWCODER_WORKSPACE_MODE === "SINGLEWORKSPACE";

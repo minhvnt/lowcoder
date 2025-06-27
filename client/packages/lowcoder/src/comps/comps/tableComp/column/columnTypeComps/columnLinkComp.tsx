@@ -39,7 +39,8 @@ const StyledLink = styled.a<{ $disabled: boolean }>`
 `;
 
 // Memoized link component
-export const ColumnLink = React.memo(({ disabled, label, onClick }: { disabled: boolean; label: string; onClick: (eventName: string) => void }) => {
+// export const ColumnLink = React.memo(({ disabled, label, onClick }: { disabled: boolean; label: string; onClick: (eventName: string) => void }) => {
+export const ColumnLink = React.memo(({ disabled, label, onClick }: { disabled: boolean; label: React.ReactNode; onClick: (eventName: string) => void }) => {
   const handleClickEvent = useCompClickEventHandler({onEvent: onClick})
   const handleClick = useCallback(() => {
     if (!disabled) {

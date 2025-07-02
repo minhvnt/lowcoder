@@ -1938,6 +1938,7 @@ export const en = {
     "prefixIcon": "Prefix Icon",
     "prefixText": "Prefix Text",
     "suffixIcon": "Suffix Icon",
+    "textColor": "Text Color",
     "icon": "Icon",
     "iconSize": "Icon Size",
     "button": "Form Button",

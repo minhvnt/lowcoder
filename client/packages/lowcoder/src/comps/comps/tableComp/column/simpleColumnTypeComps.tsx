@@ -18,13 +18,17 @@ import { migrateOldData } from "@lowcoder-ee/comps/generators/simpleGenerators";
 import { useCompClickEventHandler } from "@lowcoder-ee/comps/utils/useCompClickEventHandler";
 
 export const fixOldActionData = (oldData: any) => {
-  if (!oldData) return oldData;
+  // check if oldData is null
+  if (!oldData) { 
+    return oldData; 
+  }
   if (Boolean(oldData.onClick)) {
     return {
       ...oldData,
       onClick: [{
         name: "click",
-        handler: oldData.onClick,
+        // handler: oldData.onClick,
+        handler: oldData.onClick[0].handler, // fix lỗi không render được operation - date: 02/07/2025
       }],
     };
   }

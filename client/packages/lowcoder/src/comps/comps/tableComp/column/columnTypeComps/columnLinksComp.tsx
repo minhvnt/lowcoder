@@ -49,8 +49,13 @@ const MenuItem = React.memo(({ option, index }: { option: any; index: number }) 
     <MenuLinkWrapper>
       <ColumnLink
         disabled={option.disabled}
-        // label={option.label}
-        label={<><span style={{marginRight: option.prefixIcon ? 4 : 0}}>{option.prefixIcon}</span>{option.label}</>} // bổ sung điều chỉnh prefix icon cho links
+        label={
+          <span style={{ color: option.color || undefined }}>
+            {option.prefixIcon && <span style={{marginRight: 4}}>{option.prefixIcon}</span>}
+            {option.label}
+            {option.suffixIcon && <span style={{marginLeft: 4}}>{option.suffixIcon}</span>}
+          </span>
+        }
         onClick={option.onClick}
       />
     </MenuLinkWrapper>
@@ -63,6 +68,8 @@ const OptionItemTmp = new MultiCompBuilder(
   {
     label: StringControl,
     prefixIcon: IconControl, // thêm prefix icon
+    suffixIcon: IconControl, // thêm suffix icon
+    color: StringControl, // thêm trường chỉnh màu chữ
     onClick: eventHandlerControl(LinkEventOptions),
     hidden: BoolCodeControl,
     disabled: BoolCodeControl,
@@ -76,6 +83,8 @@ const OptionItemTmp = new MultiCompBuilder(
       <>
         {children.label.propertyView({ label: trans("label") })}
         {children.prefixIcon.propertyView({ label: trans("button.prefixIcon") })} 
+        {children.suffixIcon.propertyView({ label: trans("button.suffixIcon") })} 
+        {children.color.propertyView({ label: trans("button.textColor") })}
         {hiddenPropertyView(children)}
         {disabledPropertyView(children)}
         {children.onClick.propertyView()}
@@ -83,7 +92,7 @@ const OptionItemTmp = new MultiCompBuilder(
     );
   })
   .build();
-
+// hàm chuyển đổi dữ liệu cấu hình cũ đã có(fixOldActionData) tương thích với cấu hình OptionItem mới(OptionItemTmp) và lưu thành OptionItem
 const OptionItem = migrateOldData(OptionItemTmp, fixOldActionData);
 
 // Memoized menu component

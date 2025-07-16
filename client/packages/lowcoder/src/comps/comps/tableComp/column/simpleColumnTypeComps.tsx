@@ -23,14 +23,27 @@ export const fixOldActionData = (oldData: any) => {
     return oldData; 
   }
   if (Boolean(oldData.onClick)) {
+    // Nếu là mảng, giữ nguyên
+    if (Array.isArray(oldData.onClick)) {
+      return oldData;
+    }
+    // Nếu là object, chuyển thành mảng 1 phần tử
     return {
       ...oldData,
       onClick: [{
         name: "click",
-        // handler: oldData.onClick,
-        handler: oldData.onClick[0].handler, // fix lỗi không render được operation - date: 02/07/2025
+        handler: oldData.onClick.handler || oldData.onClick[0]?.handler,
       }],
     };
+    // tạm che để fix lỗi hiển thị 1 event cho operation
+    // return {
+    //   ...oldData,
+    //   onClick: [{
+    //     name: "click",
+    //     // handler: oldData.onClick,
+    //     handler: oldData.onClick[0].handler, // fix lỗi không render được operation - date: 02/07/2025
+    //   }],
+    // };
   }
   return oldData;
 }

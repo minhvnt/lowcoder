@@ -1,6 +1,6 @@
 {
   "name": "lowcoder-frontend",
-  "version": "2.7.2",
+  "version": "2.7.5",
   "type": "module",
   "private": true,
   "workspaces": [
@@ -15,6 +15,7 @@
     "start:ee": "REACT_APP_EDITION=enterprise yarn workspace lowcoder start",
     "translate": "node --loader ts-node/esm ./scripts/translate.js",
     "build": "yarn node ./scripts/build.js",
+    "build:ee": "REACT_APP_EDITION=enterprise yarn node ./scripts/build.js",
     "test": "jest && yarn workspace lowcoder-comps test",
     "prepare": "yarn workspace lowcoder prepare",
     "build:core": "yarn workspace lowcoder-core build",

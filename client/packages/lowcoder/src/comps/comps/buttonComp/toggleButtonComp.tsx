@@ -1,4 +1,4 @@
-import { BoolCodeControl, StringControl } from "comps/controls/codeControl";
+import { BoolCodeControl, StringControl, NumberControl } from "comps/controls/codeControl";
 import { withDefault } from "comps/generators";
 import { UICompBuilder } from "comps/generators/uiCompBuilder";
 import {
@@ -12,7 +12,7 @@ import { trans } from "i18n";
 import styled from "styled-components";
 import { ChangeEventHandlerControl } from "../../controls/eventHandlerControl";
 import { CommonNameConfig, NameConfig, withExposingConfigs } from "../../generators/withExposing";
-import { Button100, ButtonCompWrapper, buttonRefMethods } from "./buttonCompConstants";
+import { Button100, ButtonCompWrapper, buttonRefMethods, DisabledButtonStyleControl } from "./buttonCompConstants";
 import { IconControl } from "comps/controls/iconControl";
 import { AlignWithStretchControl, LeftRightControl } from "comps/controls/dropdownControl";
 import { booleanExposingStateControl } from "comps/controls/codeStateControl";
@@ -63,10 +63,12 @@ const ToggleTmpComp = (function () {
     iconPosition: LeftRightControl,
     alignment: AlignWithStretchControl,
     style: styleControl(ToggleButtonStyle , 'style'),
+    disabledStyle: DisabledButtonStyleControl,
     animationStyle: styleControl(AnimationStyle , 'animationStyle'),
     showBorder: withDefault(BoolControl, true),
     viewRef: RefControl<HTMLElement>,
     tooltip: StringControl,
+    tabIndex: NumberControl,
   };
   return new UICompBuilder(childrenMap, (props) => {
     const text = props.showText
@@ -84,12 +86,14 @@ const ToggleTmpComp = (function () {
           <Button100
             ref={props.viewRef}
             $buttonStyle={props.style}
+            $disabledStyle={props.disabledStyle}
             loading={props.loading}
             disabled={props.disabled}
             onClick={() => {
               props.onEvent("change");
               props.value.onChange(!props.value.value);
             }}
+            tabIndex={typeof props.tabIndex === 'number' ? props.tabIndex : undefined}
           >
             {props.iconPosition === "right" && text}
             {<IconWrapper>{props.value.value ? props.trueIcon : props.falseIcon}</IconWrapper>}
@@ -115,6 +119,7 @@ const ToggleTmpComp = (function () {
               {hiddenPropertyView(children)}
               {loadingPropertyView(children)}
               {showDataLoadingIndicatorsPropertyView(children)}
+              {children.tabIndex.propertyView({ label: trans("prop.tabIndex") })}
             </Section>
             <Section name={sectionNames.advanced}>
               {children.showText.propertyView({ label: trans("toggleButton.showText") })}
@@ -153,6 +158,7 @@ const ToggleTmpComp = (function () {
           </>
           )}
         
+        <Section name={trans("prop.disabledStyle")}>{children.disabledStyle.getPropertyView()}</Section>
       </>
     ))
     .setExposeMethodConfigs(buttonRefMethods)

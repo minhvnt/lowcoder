@@ -30,7 +30,7 @@ import { formDataChildren, FormDataPropertyView } from "../formComp/formDataCons
 import { withMethodExposing, refMethods } from "../../generators/withMethodExposing";
 import { RefControl } from "../../controls/refControl";
 import { styleControl } from "comps/controls/styleControl";
-import {  AnimationStyle, InputFieldStyle, InputLikeStyle, InputLikeStyleType, LabelStyle, heightCalculator, widthCalculator } from "comps/controls/styleControlConstants";
+import {  AnimationStyle, InputFieldStyle, InputLikeStyle, InputLikeStyleType, LabelStyle, DisabledInputStyle, DisabledInputStyleType, heightCalculator, widthCalculator } from "comps/controls/styleControlConstants";
 import {
   disabledPropertyView,
   hiddenPropertyView,
@@ -59,7 +59,6 @@ const getStyle = (style: InputLikeStyleType) => {
   return css`
     border-radius: ${style.radius};
     border-width:${style.borderWidth} !important;
-    // line-height: ${style.lineHeight} !important;
     // still use antd style when disabled
     &:not(.ant-input-number-disabled) {
       color: ${style.text};
@@ -75,11 +74,7 @@ const getStyle = (style: InputLikeStyleType) => {
       &:hover {
         border-color: ${style.accent};
       }
-
-      &::-webkit-input-placeholder {
-        color: ${style.text};
-        opacity: 0.4;
-      }
+  
       .ant-input-number {	
         margin: 0;	
         
@@ -93,6 +88,26 @@ const getStyle = (style: InputLikeStyleType) => {
         font-weight:${style.textWeight} !important;
         font-size:${style.textSize} !important;
         font-style:${style.fontStyle} !important;
+
+        &::-webkit-input-placeholder {
+          color: ${style.placeholder};
+          opacity: 1;
+        }
+
+        &::-moz-placeholder {
+          color: ${style.placeholder};
+          opacity: 1;
+        }
+
+        &:-ms-input-placeholder {
+          color: ${style.placeholder};
+          opacity: 1;
+        }
+
+        &::placeholder {
+          color: ${style.placeholder};
+          opacity: 1;
+        }
       }
 
       .ant-input-number-handler-wrap {
@@ -122,11 +137,27 @@ const getStyle = (style: InputLikeStyleType) => {
 
 const InputNumber = styled(AntdInputNumber)<{
   $style: InputLikeStyleType;
+  $disabledStyle?: DisabledInputStyleType;
 }>`
   box-shadow: ${(props) =>
     `${props.$style?.boxShadow} ${props.$style?.boxShadowColor}`};
   width: 100%;
   ${(props) => props.$style && getStyle(props.$style)}
+  
+  /* Disabled state styling */
+  &:disabled,
+  &.ant-input-number-disabled {
+    color: ${(props) => props.$disabledStyle?.disabledText};
+    background: ${(props) => props.$disabledStyle?.disabledBackground};
+    border-color: ${(props) => props.$disabledStyle?.disabledBorder};
+    cursor: not-allowed;
+    
+    .ant-input-number-input {
+      color: ${(props) => props.$disabledStyle?.disabledText};
+      background: ${(props) => props.$disabledStyle?.disabledBackground};
+    }
+    
+  }
 `;
 
 const FormatterOptions = [
@@ -262,10 +293,11 @@ const childrenMap = {
   viewRef: RefControl<HTMLInputElement>,
   style: styleControl(InputFieldStyle , 'style') , 
   labelStyle: styleControl(LabelStyle , 'labelStyle'),
-  prefixText : stringExposingStateControl("defaultValue"),
+  prefixText: StringControl,
   animationStyle: styleControl(AnimationStyle , 'animationStyle'),
   prefixIcon: IconControl,
   inputFieldStyle: styleControl(InputLikeStyle , 'inputFieldStyle'),
+  disabledStyle: styleControl(DisabledInputStyle, 'disabledStyle'),
   // validation
   required: BoolControl,
   showValidationWhenEmpty: BoolControl,
@@ -356,7 +388,6 @@ const CustomInputNumber = (props: RecordConstructorToView<typeof childrenMap>) =
       return;
     }
     if (
-      cursor !== 0 &&
       props.precision > 0 &&
       (event.key === "." || event.key === "。") &&
       !/[.]/.test(value)
@@ -382,7 +413,8 @@ const CustomInputNumber = (props: RecordConstructorToView<typeof childrenMap>) =
       stringMode={true}
       precision={props.precision}
       $style={props.inputFieldStyle}
-      prefix={hasIcon(props.prefixIcon) ? props.prefixIcon : props.prefixText.value}
+      $disabledStyle={props.disabledStyle}
+      prefix={hasIcon(props.prefixIcon) ? props.prefixIcon : props.prefixText}
       tabIndex={typeof props.tabIndex === 'number' ? props.tabIndex : undefined}
       onPressEnter={() => {
         handleFinish();
@@ -473,6 +505,9 @@ let NumberInputTmpComp = (function () {
           <Section name={sectionNames.inputFieldStyle}>
             {children.inputFieldStyle.getPropertyView()}
           </Section>
+                      <Section name={trans("prop.disabledStyle")}>
+              {children.disabledStyle.getPropertyView()}
+            </Section>
           <Section name={sectionNames.animationStyle} hasTooltip={true}>
             {children.animationStyle.getPropertyView()}
           </Section>

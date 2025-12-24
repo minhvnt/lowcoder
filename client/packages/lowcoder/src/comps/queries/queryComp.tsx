@@ -64,6 +64,7 @@ import {
 import { QueryContext } from "../../util/context/QueryContext";
 import { useFixedDelay } from "../../util/hooks";
 import { JSONObject, JSONValue } from "../../util/jsonTypes";
+import { processCurlData } from "../../util/curlUtils";
 import { BoolPureControl } from "../controls/boolControl";
 import { millisecondsControl } from "../controls/millisecondControl";
 import { paramsMillisecondsControl } from "../controls/paramsControl";
@@ -300,7 +301,7 @@ QueryCompTmp = class extends QueryCompTmp {
 
       // If the dsl has not changed, but the dependent node value has changed, then trigger the query execution
       // FIXME, this should be changed to a reference judgement, but for unknown reasons if the reference is modified once, it will change twice.
-      if (dependsChanged) {
+      if (dependsChanged && !isJsQuery) {
         if (dslNotChanged) {
           this.execute(next);
         }
@@ -334,7 +335,7 @@ function QueryView(props: QueryViewProps) {
     ) {
       setTimeout(() => {
         comp.dispatch(deferAction(executeQueryAction({})));
-      }, 300);
+      }, 600);
     }
 
     if(getTriggerType(comp) === "onTimeout") {
@@ -743,18 +744,42 @@ class QueryListComp extends QueryListTmpComp implements BottomResListComp {
     const name = this.genNewName(editorState);
     const compType = extraInfo?.compType || "js";
     const dataSourceId = extraInfo?.dataSourceId;
+    const curlData = extraInfo?.curlData;
+    console.log("CURL DATA", curlData);
+
+    // Build the basic payload
+    let payload: any = {
+      id: id,
+      name: name,
+      datasourceId: dataSourceId,
+      compType,
+      triggerType: manualTriggerResource.includes(compType) ? "manual" : "automatic",
+      isNewCreate: true,
+      order: Date.now(),
+    };
+
+    // If this is a REST API created from cURL, pre-populate the HTTP query fields
+    if (compType === "restApi" && curlData) {
+      const curlConfig = processCurlData(curlData);
+      if (curlConfig) {
+        payload = {
+          ...payload,
+          comp: {
+            httpMethod: curlConfig.method,
+            path: curlConfig.url,
+            headers: curlConfig.headers,
+            params: curlConfig.params,
+            bodyType: curlConfig.bodyType,
+            body: curlConfig.body,
+            bodyFormData: curlConfig.bodyFormData,
+          },
+        };
+      }
+    }
 
     this.dispatch(
       wrapActionExtraInfo(
-        this.pushAction({
-          id: id,
-          name: name,
-          datasourceId: dataSourceId,
-          compType,
-          triggerType: manualTriggerResource.includes(compType) ? "manual" : "automatic",
-          isNewCreate: true,
-          order: Date.now(),
-        }),
+        this.pushAction(payload),
         {
           compInfos: [
             {

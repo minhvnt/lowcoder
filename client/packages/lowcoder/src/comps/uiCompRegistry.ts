@@ -93,6 +93,7 @@ export type UICompType =
   | "dropdown"
   | "text"
   | "table"
+  | "tableLite"
   | "image"
   | "progress"
   | "progressCircle"
@@ -106,6 +107,7 @@ export type UICompType =
   | "container"
   | "pageLayout" // added by Falk Wolsky
   | "floatTextContainer"
+  | "multiTags" // Added by Kamal Qureshi
   | "tabbedContainer"
   | "modal"
   | "listView"

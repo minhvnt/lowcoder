@@ -1,4 +1,4 @@
-import { BoolCodeControl, StringControl } from "comps/controls/codeControl";
+import { BoolCodeControl, StringControl, NumberControl } from "comps/controls/codeControl";
 import { dropdownControl } from "comps/controls/dropdownControl";
 import { ButtonEventHandlerControl } from "comps/controls/eventHandlerControl";
 import { IconControl } from "comps/controls/iconControl";
@@ -21,6 +21,7 @@ import {
   ButtonCompWrapper,
   buttonRefMethods,
   ButtonStyleControl,
+  DisabledButtonStyleControl,
 } from "./buttonCompConstants";
 import { RefControl } from "comps/controls/refControl";
 import { Tooltip } from "antd";
@@ -133,9 +134,11 @@ const childrenMap = {
   prefixIcon: IconControl,
   suffixIcon: IconControl,
   style: ButtonStyleControl,
+  disabledStyle: DisabledButtonStyleControl,
   animationStyle: styleControl(AnimationStyle, 'animationStyle'),
   viewRef: RefControl<HTMLElement>,
-  tooltip: StringControl
+  tooltip: StringControl,
+  tabIndex: NumberControl
 };
 
 type ChildrenType = NewChildren<RecordConstructorToComp<typeof childrenMap>>;
@@ -160,8 +163,12 @@ const ButtonPropertyView = React.memo((props: {
               disabledPropertyView(props.children),
               hiddenPropertyView(props.children),
               loadingPropertyView(props.children),
+              props.children.tabIndex.propertyView({ label: trans("prop.tabIndex") }),
             ]
-            : props.children.form.getPropertyView()}
+            : [
+              props.children.form.getPropertyView(),
+              props.children.tabIndex.propertyView({ label: trans("prop.tabIndex") }),
+            ]}
           </Section>
         </>
       )}
@@ -173,6 +180,7 @@ const ButtonPropertyView = React.memo((props: {
             {props.children.suffixIcon.propertyView({ label: trans("button.suffixIcon") })}
           </Section>
           <Section name={sectionNames.style}>{props.children.style.getPropertyView()}</Section>
+          <Section name={trans("prop.disabledStyle")}>{props.children.disabledStyle.getPropertyView()}</Section>
         </>
       )}
     </>
@@ -212,12 +220,14 @@ const ButtonView = React.memo((props: ToViewReturn<ChildrenType>) => {
             <Button100
               ref={props.viewRef}
               $buttonStyle={props.style}
+              $disabledStyle={props.disabledStyle}
               loading={props.loading}
               disabled={
                 props.disabled ||
                 (!isDefault(props.type) && getForm(editorState, props.form)?.disableSubmit())
               }
               onClick={handleClick}
+              tabIndex={typeof props.tabIndex === 'number' ? props.tabIndex : undefined}
             >
               {props.prefixIcon && <IconWrapper>{props.prefixIcon}</IconWrapper>}
               {

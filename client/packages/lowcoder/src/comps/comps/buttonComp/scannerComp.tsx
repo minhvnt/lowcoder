@@ -4,11 +4,10 @@ import {
   Button100,
   ButtonCompWrapper,
   buttonRefMethods,
+  ButtonStyleControl,
 } from "comps/comps/buttonComp/buttonCompConstants";
-import { BoolCodeControl, StringControl } from "comps/controls/codeControl";
+import { BoolCodeControl, StringControl, NumberControl } from "comps/controls/codeControl";
 import { ScannerEventHandlerControl } from "comps/controls/eventHandlerControl";
-import { styleControl } from "comps/controls/styleControl";
-import { DropdownStyle } from "comps/controls/styleControlConstants";
 import { withDefault } from "comps/generators";
 import { UICompBuilder } from "comps/generators/uiCompBuilder";
 import { CustomModal, Section, sectionNames } from "lowcoder-design";
@@ -127,8 +126,9 @@ const ScannerTmpComp = (function () {
     maskClosable: withDefault(BoolControl, true),
     onEvent: ScannerEventHandlerControl,
     disabled: BoolCodeControl,
-    style: styleControl(DropdownStyle, "style"),
+    style: ButtonStyleControl,
     viewRef: RefControl<HTMLElement>,
+    tabIndex: NumberControl,
   };
   return new UICompBuilder(childrenMap, (props) => {
     const [showModal, setShowModal] = useState(false);
@@ -200,6 +200,7 @@ const ScannerTmpComp = (function () {
           ref={props.viewRef}
           $buttonStyle={props.style}
           disabled={props.disabled}
+          tabIndex={typeof props.tabIndex === 'number' ? props.tabIndex : undefined}
           onClick={() => {
             props.onEvent("click");
             setShowModal(true);
@@ -285,6 +286,7 @@ const ScannerTmpComp = (function () {
               {disabledPropertyView(children)}
               {hiddenPropertyView(children)}
               {showDataLoadingIndicatorsPropertyView(children)}
+              {children.tabIndex.propertyView({ label: trans("prop.tabIndex") })}
             </Section>
             <Section name={sectionNames.advanced}>
               {children.continuous.propertyView({

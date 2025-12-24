@@ -793,18 +793,15 @@ export const TableToolbar = memo(function TableToolbar(props: {
 
   const handleDownload = useCallback(() => {
     onDownload();
-    onEvent("download");
-  }, [onDownload, onEvent]);
+  }, [onDownload]);
 
   const handleSaveChanges = useCallback(() => {
     onSaveChanges();
-    onEvent("saveChanges");
-  }, [onSaveChanges, onEvent]);
+  }, [onSaveChanges]);
 
   const handleCancelChanges = useCallback(() => {
     onCancelChanges();
-    onEvent("cancelChanges");
-  }, [onCancelChanges, onEvent]);
+  }, [onCancelChanges]);
 
   const handleColumnFilterChange = useCallback((filters: TableFilterDataType[], stackType: TableFilter["stackType"]) => {
     if (
@@ -873,6 +870,9 @@ export const TableToolbar = memo(function TableToolbar(props: {
             pagination.onChange && pagination.onChange(page, pageSize);
             if (page !== pagination.current) {
               onEvent("pageChange");
+            }
+            if (pageSize !== pagination.pageSize) {
+              onEvent("pageSizeChange");
             }
           }}
         />

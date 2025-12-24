@@ -119,6 +119,7 @@ export function* fetchFolderElementsSaga(action: ReduxAction<FetchFolderElements
           payload: response.data.data.filter((m) => m.folder),
         });
       }
+      
       yield put({
         type: ReduxActionTypes.FETCH_FOLDER_ELEMENTS_SUCCESS,
         payload: { parentFolderId: action.payload.folderId, elements: response.data.data },

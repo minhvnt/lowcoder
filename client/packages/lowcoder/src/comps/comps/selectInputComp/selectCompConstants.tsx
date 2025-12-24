@@ -6,7 +6,7 @@ import {
 } from "lowcoder-core";
 import { BoolControl } from "../../controls/boolControl";
 import { LabelControl } from "../../controls/labelControl";
-import { BoolCodeControl, StringControl } from "../../controls/codeControl";
+import { BoolCodeControl, StringControl, NumberControl } from "../../controls/codeControl";
 import { PaddingControl } from "../../controls/paddingControl";
 import { MarginControl } from "../../controls/marginControl";
 import {
@@ -76,7 +76,8 @@ export const getStyle = (
       padding: ${style.padding};	
       height: auto;	
     }	
-    .ant-select-selection-search {	
+    .ant-select-selection-search {
+      min-width: 50px; 	
       padding: ${style.padding};
     }	
     .ant-select-selection-search-input,
@@ -241,6 +242,7 @@ export const SelectChildrenMap = {
   margin: MarginControl,
   padding: PaddingControl,
   inputFieldStyle:styleControl(SelectStyle),
+  tabIndex: NumberControl,
   ...SelectInputValidationChildren,
   ...formDataChildren,
 };
@@ -268,9 +270,11 @@ export const SelectUIView = (
     placeholder={props.placeholder}
     value={props.value}
     showSearch={props.showSearch}
-    filterOption={(input, option) =>
-      option?.label.toLowerCase().includes(input.toLowerCase())
-    }
+    tabIndex={typeof props.tabIndex === 'number' ? props.tabIndex : undefined}
+    filterOption={(input, option) => {
+      if (!option) return false;
+      return String(option.label ?? option.value ?? "").toLowerCase().includes(input.toLowerCase());
+    }}
     popupRender={(originNode: ReactNode) => (
       <DropdownStyled $style={props.childrenInputFieldStyle as ChildrenMultiSelectStyleType}>
         {originNode}
@@ -346,6 +350,7 @@ export const SelectPropertyView = (
           {disabledPropertyView(children)}
           {hiddenPropertyView(children)}
           {showDataLoadingIndicatorsPropertyView(children as any)}
+          {children.tabIndex.propertyView({ label: trans("prop.tabIndex") })}
         </Section>
       </>
     )}

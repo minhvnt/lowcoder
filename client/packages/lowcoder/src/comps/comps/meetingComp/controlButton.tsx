@@ -1,4 +1,4 @@
-import { BoolCodeControl, StringControl } from "comps/controls/codeControl";
+import { BoolCodeControl, StringControl, NumberControl } from "comps/controls/codeControl";
 import { dropdownControl } from "comps/controls/dropdownControl";
 import { ButtonEventHandlerControl } from "comps/controls/eventHandlerControl";
 import { IconControl } from "comps/controls/iconControl";
@@ -28,7 +28,7 @@ import {
 } from "../../generators/withExposing";
 import { IForm } from "../formComp/formDataConstants";
 import { SimpleNameComp } from "../simpleNameComp";
-import { Button100, ButtonStyleControl } from "./videobuttonCompConstants";
+import { Button100, ButtonStyleControl, DisabledButtonStyleControl } from "./videobuttonCompConstants";
 import { RefControl } from "comps/controls/refControl";
 import { AutoHeightControl } from "comps/controls/autoHeightControl";
 import {
@@ -195,6 +195,7 @@ const childrenMap = {
   aspectRatio: withDefault(StringControl, "1 / 1"),
   onEvent: ButtonEventHandlerControl,
   disabled: BoolCodeControl,
+  disabledStyle: DisabledButtonStyleControl,
   loading: BoolCodeControl,
   form: SelectFormControl,
   sourceMode: dropdownControl(ModeOptions, "standard"),
@@ -203,7 +204,8 @@ const childrenMap = {
   style: ButtonStyleControl,
   viewRef: RefControl<HTMLElement>,
   restrictPaddingOnRotation:withDefault(StringControl, 'controlButton'),
-  tooltip: StringControl
+  tooltip: StringControl,
+  tabIndex: NumberControl
 };
 
 let ButtonTmpComp = (function () {
@@ -267,6 +269,7 @@ let ButtonTmpComp = (function () {
               <Tooltip title={props.tooltip}>
                 <Button100
                   ref={props.viewRef}
+                  $disabledStyle={props.disabledStyle}
                   $buttonStyle={props.style}
                   loading={props.loading}
                   style={
@@ -292,6 +295,7 @@ let ButtonTmpComp = (function () {
                       ? handleClickEvent()
                       : submitForm(editorState, props.form)
                   }
+                  tabIndex={typeof props.tabIndex === 'number' ? props.tabIndex : undefined}
                 >
                   {props.sourceMode === 'standard' && props.prefixIcon && (
                     <IconWrapper
@@ -340,6 +344,7 @@ let ButtonTmpComp = (function () {
             {disabledPropertyView(children)}
             {hiddenPropertyView(children)}
             {loadingPropertyView(children)}
+            {children.tabIndex.propertyView({ label: trans("prop.tabIndex") })}
           </Section>
         )}
 
@@ -357,6 +362,9 @@ let ButtonTmpComp = (function () {
             </Section>
             <Section name={sectionNames.style}>
               {children.style.getPropertyView()}
+            </Section>
+            <Section name={trans("prop.disabledStyle")}>
+              {children.disabledStyle.getPropertyView()}
             </Section>
           </>
         )}

@@ -116,7 +116,7 @@ export default function FormLoginSteps(props: FormLoginProps) {
   const [currentStep, setCurrentStep] = useState<CurrentStepEnum>(CurrentStepEnum.EMAIL);
   const [organizationId, setOrganizationId] = useState<string|undefined>(props.organizationId);
   const [skipWorkspaceStep, setSkipWorkspaceStep] = useState<boolean>(false);
-  const [signupEnabled, setSignupEnabled] = useState<boolean>(true);
+  const [signupEnabled, setSignupEnabled] = useState<boolean>(false);
   const [signinEnabled, setSigninEnabled] = useState<boolean>(true); // check from server settings
   const serverSettings = useSelector(getServerSettings);
   const isFetchingConfig = useSelector(getSystemConfigFetching);
@@ -124,11 +124,12 @@ export default function FormLoginSteps(props: FormLoginProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
-  // Tạm che để cho phép đăng nhập với email
+  // Tạm che để cho phép đăng nhập với email, for PRODUCTION
   const isEmailLoginEnabled = useMemo(() => {
     return isFormLoginEnabled && signinEnabled;
   }, [isFormLoginEnabled, signinEnabled]);
   
+  // Thiết lập để cho phép đăng nhập với email, for TEST
   // const isEmailLoginEnabled = true;
 
   const isEnterpriseMode = useMemo(() => {
@@ -154,8 +155,8 @@ export default function FormLoginSteps(props: FormLoginProps) {
       LOWCODER_EMAIL_AUTH_ENABLED,
     } = serverSettings;
 
-    setSignupEnabled(LOWCODER_EMAIL_SIGNUP_ENABLED === 'true');
-    setSigninEnabled(LOWCODER_EMAIL_AUTH_ENABLED === 'true');
+    setSignupEnabled(LOWCODER_EMAIL_SIGNUP_ENABLED === 'false'); // không cho phép đăng ký tài khoản
+    setSigninEnabled(LOWCODER_EMAIL_AUTH_ENABLED === 'true'); // cho phép đăng nhập với email
   }, [serverSettings]);
 
   const afterLoginSuccess = () => {

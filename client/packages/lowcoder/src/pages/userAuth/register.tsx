@@ -183,13 +183,13 @@ function UserRegister() {
   }
 
   const registerHeading = trans("userAuth.register")
-  const registerSubHeading = trans("userAuth.poweredByLowcoder");
+  // const registerSubHeading = trans("userAuth.poweredByLowcoder"); // tắt dòng thông báo powered by Lowcoder
 
   return (
     <Spin indicator={<LoadingOutlined style={{ fontSize: 30 }} />} spinning={orgLoading}>
       <AuthContainer
         heading={registerHeading}
-        subHeading={registerSubHeading}
+        // subHeading={registerSubHeading} 
         type="large"
         isEE={isEnterpriseActive}
       >

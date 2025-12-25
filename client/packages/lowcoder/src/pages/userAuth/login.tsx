@@ -142,13 +142,13 @@ function Login() {
   }
 
   const loginHeading = getLoginTitle(inviteInfo?.createUserName)
-  const loginSubHeading = trans("userAuth.poweredByLowcoder");
+  // const loginSubHeading = trans("userAuth.poweredByLowcoder"); // tắt dòng thông báo powered by Lowcoder
 
   return (
     <>
       <AuthContainer
         heading={loginHeading}
-        subHeading={loginSubHeading}
+        // subHeading={loginSubHeading}
         isEE={isEnterpriseActive}
       >
         <FormLoginSteps organizationId={organizationId} />
